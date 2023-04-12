@@ -1,26 +1,27 @@
-const Account = require("../../../model/account").Account
+const { TakeByUsername, Register } = require("../../../model/account")
+const registerSchema = require("../../../pkg/validation.js")
 
 module.exports = {
   GetByIDs: async (req, res) => {
-      var accountIDs = [req.params.id]
-      try {
-        const users = await Account.FindByIDs(accountIDs)
-        return res.status(200).send({
-          data: users,
-        })
-      }
-      catch (error) {
-          return res.status(500).send({
-            error: error.message,
-            message: 'Some error ocurred while retrieving data.',
-          });
-      }
+    var accountIDs = [req.params.id]
+    try {
+      const users = await Account.FindByIDs(accountIDs)
+      return res.status(200).send({
+        data: users,
+      })
+    }
+    catch (error) {
+      return res.status(500).send({
+        error: error.message,
+        message: 'Some error ocurred while retrieving data.',
+      });
+    }
   },
   GetByID: async (req, res) => {
     try {
       const account = await Account.TakeByID(req.params.id)
-        if (!account) throw createError.NotFound('Account not found')
-        return res.status(200).send(account);
+      if (!account) throw createError.NotFound('Account not found')
+      return res.status(200).send(account);
     }
     catch (error) {
       if(err.kind === 'ObjectId') {
@@ -37,8 +38,7 @@ module.exports = {
   },
   Register: async (req, res, next) => {
     try {
-      const body = await registerSchema.validateAsync(req.body)
-      const doesExist = await Account.TakeByUsername(req.body.username)
+      const doesExist = await TakeByUsername(req.body.username)
       if (doesExist)
         throw createError.Conflict(`${body.username} is already been registered`)
       const account = new User(body)
@@ -47,7 +47,7 @@ module.exports = {
       const hashedPassword = await bcrypt.hash(account.password, salt)
       account.password = hashedPassword
 
-      Account.Create(account).then(() => {
+      Register(account).then(() => {
         return res.status(200).send({ 
           message: 'Created',
         })
