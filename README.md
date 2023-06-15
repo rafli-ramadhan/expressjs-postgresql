@@ -1,9 +1,9 @@
-# Express + Sequelize + MySQL with @Hapi/Joi (CRUD and Auth Application)
+# Express + Sequelize + PostgreSQL with @Hapi/Joi (CRUD and Auth Application)
 
 ## Requirement
 
 1. Node.js
-2. MySQL
+2. PostgreSQL
 
 ## Set Up :rocket:
 
